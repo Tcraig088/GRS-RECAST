@@ -1,0 +1,2 @@
+[console_scripts]
+recastgui = recastgui.main:main
