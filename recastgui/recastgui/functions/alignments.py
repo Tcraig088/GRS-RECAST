@@ -1,5 +1,4 @@
 import math
-import ser_parser
 import os
 import numpy as np
 import pandas as pd
@@ -9,6 +8,8 @@ from scipy import ndimage
 import skimage as ski
 import statistics as stat
 import copy
+
+
 def gaussian_filter(img,sigma):
     img = nd.gaussian_filter(img,sigma)
     

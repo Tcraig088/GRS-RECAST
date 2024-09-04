@@ -2,6 +2,7 @@ numpy
 pandas
 matplotlib
 hyperspy
+scikit-learn
 
 [dev]
 pytest

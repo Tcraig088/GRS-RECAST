@@ -2,23 +2,13 @@ import matplotlib.pyplot as plt
 import pandas as pd 
 import numpy as np
 import matplotlib.image as mpimg
-from read_write import regtext, reset
+from recastgui.read_write import regtext, reset
 import skimage.metrics as ski
 import astra 
 import copy
 import os 
 import sys
 
-#data2d 
-#data3d
-#projector
-#algorithm
-#matrix
-#creators
-#functions
-#optomo
-#plugin
-#astra
 
 
 def GetNorm(img,slices):

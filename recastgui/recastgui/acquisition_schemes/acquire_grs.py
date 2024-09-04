@@ -1,17 +1,15 @@
 import math
 import pandas as pd
 import numpy as np
-import ser_parser
+import hyperspy.api as hs
 import os
 import time
 import tomop
 import csv
-import helpers.preprocess as pp
 
-#import mxnet as mx
 from PIL import Image
 from scipy import ndimage
-
+from recastgui.functions import alignments as al
 
 def Write_Filelist(path, df=pd.DataFrame()):
     if len(df.index)==0:
@@ -56,7 +54,7 @@ def Update_Reconstruction(pub, args, filelist,img_array):
 def Run(args):
     filepath = os.path.join(args.path, "files.txt")
     save, reset = WriteSave(reset)
-    if os.path.exists(filepath) and not !save:
+    if os.path.exists(filepath) and not save:
         filelist = ReadFiles()
     elif save:
         filelist = ReadSave()
@@ -104,12 +102,12 @@ def Run(args):
 
             img = np.array(img)
             img = np.reshape(img,shape)
-            img = pp.bkg_correct(img)
-            img = pp.bkg_mask(img)
-            img = pp.square_image(img)
-            img = pp.center(img)
+            img = al.bkg_correct(img)
+            img = al.bkg_mask(img)
+            img = al.square_image(img)
+            img = al.center(img)
             if j+1 > 1:
-                shift = pp.align(img,img_old)
+                shift = al.align(img,img_old)
                 img = np.roll(img, -shift, (0, 1))
             img_old = img    
             if j+1 == 1:
@@ -146,12 +144,12 @@ def Run(args):
                     print(shape)
                     img = np.array(img)
                     img = np.reshape(img,shape)
-                    img = pp.bkg_correct(img)
-                    img = pp.bkg_mask(img)
-                    img = pp.square_image(img)
-                    img = pp.center(img)
+                    img = al.bkg_correct(img)
+                    img = al.bkg_mask(img)
+                    img = al.square_image(img)
+                    img = al.center(img)
                     if i > 1:
-                        shift = pp.align(img,img_old)
+                        shift = al.align(img,img_old)
                         img = np.roll(img, -shift, (0, 1))
                     img_old = img
                     if i == 1:
@@ -162,7 +160,6 @@ def Run(args):
                     
         filelist = filelist.sort_index()
         if reset == True:
-            print('Reconstruction Updated')
             for item in filelist:
                 update_reconstruction(filelist,img_array)
             if os.exists(resetpath):

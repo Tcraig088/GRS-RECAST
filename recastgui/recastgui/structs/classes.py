@@ -2,7 +2,7 @@ import os
 import pandas as pd 
 import numpy as np
 import hyperspy.api as hs
-from structs.enums import ProjectionType as PT
+from recastgui.structs.enums import ProjectionType as PT
 
 class Projection():
     def __init__(self, path ,filename, args):
@@ -18,30 +18,30 @@ class Projection():
                 self.identifier = row.identifier
                 self.signal = row['name']
                 filetype = row['type']
-        match filetype:
-            case PT.EMI.value:
-                name = filename.split('_')
-                path = os.path.join(path, name[0]+'.emi')
-                val = hs.load(path)
-                self.data = val.data
-                self.angle = val._metadata.Acquisition_instrument.TEM.Stage.tilt_alpha
-                #TODO determine ser file extension
-            case PT.TIFF.value:
-                path = os.path.join(path,filename)
-                val = hs.load(path)
-                text = filename.split("_")
-                text = text[1].split('.')
-                self.data = val.data
-                if args.acquisition.grs:
-                    ang_range = np.radians(args.acquisition.end-args.acquisition.start)
-                    gr = (1.0+np.sqrt(5.0))/2.0
-                    self.angle = np.mod(ang_range*float(text[0])*gr,ang_range) + np.radians(args.acquisition.start)
-                    self.angle = np.round(np.degrees(self.angle),2)
-                else:
-                    self.angle=args.acquisition.step*(float(text[0])-1)+args.acquisition.start
-            case _:
-                path = os.path.join(path,filename)
-                self.val = hs.load(path)
+
+        if filetype == PT.EMI.value:
+            name = filename.split('_')
+            path = os.path.join(path, name[0]+'.emi')
+            val = hs.load(path)
+            self.data = val.data
+            self.angle = val._metadata.Acquisition_instrument.TEM.Stage.tilt_alpha
+            #TODO determine ser file extension
+        elif filetype== PT.TIFF.value:
+            path = os.path.join(path,filename)
+            val = hs.load(path)
+            text = filename.split("_")
+            text = text[1].split('.')
+            self.data = val.data
+            if args.acquisition.grs:
+                ang_range = np.radians(args.acquisition.end-args.acquisition.start)
+                gr = (1.0+np.sqrt(5.0))/2.0
+                self.angle = np.mod(ang_range*float(text[0])*gr,ang_range) + np.radians(args.acquisition.start)
+                self.angle = np.round(np.degrees(self.angle),2)
+            else:
+                self.angle=args.acquisition.step*(float(text[0])-1)+args.acquisition.start
+        else:
+            path = os.path.join(path,filename)
+            self.val = hs.load(path)
                 
 class TiltSeries():
     def __init__(self, args):

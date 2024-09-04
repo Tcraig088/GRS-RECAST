@@ -4,16 +4,13 @@ import numpy as np
 import os
 import time
 import tomop
-import script
 import shutil
 
-from process_handlers import projection as pp
+from recastgui.handlers import projection as pp
 
 def Read(args):
     # Register preexisting geometry
     fh = pp.Handler(args)
-    #TODO Dont hard code the ports
-    #pub = tomop.publisher(args.host, args.port)
     pub = tomop.publisher("localhost", 5558)
     #j = 1
     time.sleep(30)
